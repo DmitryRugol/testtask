@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-public class TransferResponse implements Serializable {
-    int status;
-    String description;
+public class TransferResponseDto implements Serializable {
+    private int status;
+    private String description;
 }

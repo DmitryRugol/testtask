@@ -17,7 +17,7 @@ public class AccountService {
     public static final int TRANSFER_DESTINATION_ACCOUNT_NOT_FOUND = 4;
 
 
-    AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
@@ -25,7 +25,8 @@ public class AccountService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public int transfer(Long srcUsrId, Long dstUsrId, BigDecimal amount) {
-        if (!(amount.compareTo(new BigDecimal(0)) == 1)) {
+
+        if (amount.compareTo(new BigDecimal(0)) != 1) {
             return TRANSFER_INCORRECT_TRANSFER_AMOUNT;
         }
 
@@ -33,14 +34,17 @@ public class AccountService {
         if (srcAccOpt.isEmpty()) {
             return TRANSFER_SOURCE_ACCOUNT_NOT_FOUND;
         }
+
         Account srcAcc = srcAccOpt.get();
         if (srcAcc.getBalance().compareTo(amount) == -1) {
             return TRANSFER_NOT_ENOUGH_MONEY;
         }
+
         Optional<Account> dstAccOpt = accountRepository.findAccountByUserId(dstUsrId);
         if (dstAccOpt.isEmpty()) {
             return TRANSFER_DESTINATION_ACCOUNT_NOT_FOUND;
         }
+
         Account dstAcc = dstAccOpt.get();
         srcAcc.setBalance(srcAcc.getBalance().subtract(amount));
         dstAcc.setBalance(dstAcc.getBalance().add(amount));

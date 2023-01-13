@@ -20,10 +20,6 @@ public class User {
     @Column(nullable = false, length = 500)
     private String password;
 
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
-//            optional = false, fetch = FetchType.LAZY)
-//    private Account account;
-
     @OneToMany(mappedBy = "user", cascade=CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderBy("id")
     private List<EmailData> emails = new ArrayList<>();
@@ -72,14 +68,6 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-//    public Account getAccount() {
-//        return account;
-//    }
-//
-//    public void setAccount(Account account) {
-//        this.account = account;
-//    }
 
     public List<EmailData> getEmails() {
         return emails;

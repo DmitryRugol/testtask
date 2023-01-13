@@ -1,14 +1,12 @@
 package by.dmitryrugol.testtask.rest;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import by.dmitryrugol.testtask.entity.User;
 import by.dmitryrugol.testtask.jwt.config.JwtTokenUtil;
 import by.dmitryrugol.testtask.jwt.model.JwtRequest;
 import by.dmitryrugol.testtask.jwt.model.JwtResponse;
 import by.dmitryrugol.testtask.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,17 +24,23 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class JwtAuthenticationController {
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
+	private final JwtTokenUtil jwtTokenUtil;
 
-	@Autowired
-	private UserDetailsService jwtInMemoryUserDetailsService;
+	private final UserDetailsService jwtInMemoryUserDetailsService;
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
+
+	public JwtAuthenticationController(AuthenticationManager authenticationManager,
+									   JwtTokenUtil jwtTokenUtil,
+									   UserDetailsService jwtInMemoryUserDetailsService,
+									   UserService userService) {
+		this.authenticationManager = authenticationManager;
+		this.jwtTokenUtil = jwtTokenUtil;
+		this.jwtInMemoryUserDetailsService = jwtInMemoryUserDetailsService;
+		this.userService = userService;
+	}
 
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest)

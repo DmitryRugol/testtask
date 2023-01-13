@@ -1,6 +1,5 @@
 package by.dmitryrugol.testtask.jwt.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,11 +19,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-	private UserDetailsService jwtUserDetailsService;
+	private final UserDetailsService jwtUserDetailsService;
 
-	private JwtRequestFilter jwtRequestFilter;
+	private final JwtRequestFilter jwtRequestFilter;
 
 	public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
 							 UserDetailsService jwtUserDetailsService,
@@ -36,9 +35,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// configure AuthenticationManager so that it knows from where to load
-		// user for matching credentials
-		// Use BCryptPasswordEncoder
 		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
 	}
 
@@ -58,7 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// We don't need CSRF for this example
 		httpSecurity.csrf().disable()
 				// dont authenticate this particular request
-				.authorizeRequests().antMatchers("/authenticate", "/", "/transfer").permitAll().
+				.authorizeRequests()
+				.antMatchers("/authenticate", "/", "/transfer", "/users/search").permitAll().
 				// all other requests need to be authenticated
 				anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to

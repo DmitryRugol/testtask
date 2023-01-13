@@ -1,6 +1,7 @@
 package by.dmitryrugol.testtask.rest;
 
 import by.dmitryrugol.testtask.entity.Account;
+import by.dmitryrugol.testtask.entity.User;
 import by.dmitryrugol.testtask.repository.AccountRepository;
 import by.dmitryrugol.testtask.repository.UserRepository;
 import by.dmitryrugol.testtask.service.AccountService;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -38,7 +43,7 @@ public class HomeController {
 
     @GetMapping("/")
     public @ResponseBody
-    String greeting() {
+    String greeting() throws ParseException {
 
 //        Optional<User> uo = userRepository.findById(1L);
 //
@@ -52,6 +57,11 @@ public class HomeController {
 //        List<User> uf1 = userRepository.findUserByNameLikeOrPhones_phone_OrEmails_email("n234", "12345678901", "em9");
 //        Optional<User> uf = userRepository.findByPasswordAndEmailsOrPhones("123123123", "12345678901");
 
+
+        String sDate1="02/12/2012";
+        Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+
+        List<User> ul = userRepository.findByDateOfBirthAfter(date1);
 
         Optional<Account> a = accountRepository.findAccountByUserId(10L);
 

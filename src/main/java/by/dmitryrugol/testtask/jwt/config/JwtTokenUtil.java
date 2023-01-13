@@ -36,10 +36,6 @@ public class JwtTokenUtil implements Serializable {
 		return getAllClaimsFromToken(token).get(CLAIM_USER_ID, Long.class);
 	}
 
-	public Date getIssuedAtDateFromToken(String token) {
-		return getClaimFromToken(token, Claims::getIssuedAt);
-	}
-
 	public Date getExpirationDateFromToken(String token) {
 		return getClaimFromToken(token, Claims::getExpiration);
 	}
@@ -66,17 +62,10 @@ public class JwtTokenUtil implements Serializable {
 	public String generateToken(UserDetails userDetails, Long usrId) {
 		Map<String, Object> claims = new HashMap<>();
 		claims.put(CLAIM_USER_ID, usrId);
-		return doGenerateToken(claims, userDetails.getUsername());
-	}
-
-	private String doGenerateToken(Map<String, Object> claims, String subject) {
-		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+		return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername())
+				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + jwtExpirationSec * 1000))
 				.signWith(SignatureAlgorithm.HS256, jwtSecret).compact();
-	}
-
-	public Boolean canTokenBeRefreshed(String token) {
-		return (!isTokenExpired(token) || ignoreTokenExpiration(token));
 	}
 
 	public Boolean validateToken(String token, UserDetails userDetails) {
